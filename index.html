@@ -236,4 +236,51 @@ footer a:hover{color:#fff}
 
 <footer><div class="wrap">
  <span class="fname">Keerthana Reddy Bommineni</span>
- <ul><li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#skills">Skills</a></li><li><a href="#projects">Projects</a></li><li><a
+ <ul><li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#skills">Skills</a></li><li><a href="#projects">Projects</a></li><li><a href="#education">Education</a></li><li><a href="#contact">Contact</a></li></ul>
+</div></footer>
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+  var root=document.documentElement;
+  var yr=document.getElementById("yr");
+  if(yr){yr.textContent=new Date().getFullYear();}
+  var menu=document.getElementById("menu"), links=document.getElementById("links");
+  if(menu&&links){
+    menu.addEventListener("click",function(){links.classList.toggle("open");});
+    links.querySelectorAll("a").forEach(function(a){
+      a.addEventListener("click",function(){links.classList.remove("open");});
+    });
+  }
+  var theme=document.getElementById("theme");
+  if(theme){
+    theme.addEventListener("click",function(){
+      if(root.getAttribute("data-theme")==="dark"){root.removeAttribute("data-theme");}
+      else{root.setAttribute("data-theme","dark");}
+    });
+  }
+  var cf=document.getElementById("cf");
+  if(cf){
+    cf.addEventListener("submit",async function(e){
+      e.preventDefault();
+      var f=e.target;
+      var button=cf.querySelector("button[type='submit']");
+      if(button){button.disabled=true;button.textContent="Sending...";}
+      try{
+        var response=await fetch("/api/contact",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({name:f.n.value,email:f.e.value,subject:f.s.value,message:f.m.value})
+        });
+        if(!response.ok){throw new Error("Request failed");}
+        f.reset();
+        alert("Message sent. Thank you!");
+      }catch(error){
+        alert("Could not send. Please email me directly.");
+      }finally{
+        if(button){button.disabled=false;button.textContent="Send Message";}
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
